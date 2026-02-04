@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="login-page" class="page active">
+        <div class="login-container">
+            <div class="login-left">
+                <div class="login-branding">
+                    <div class="logo-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h1>Employee Management System</h1>
+                    <p>Streamline your workforce management with our comprehensive task tracking solution</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fas fa-users"></i>
+                            <span>Employee Management</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-project-diagram"></i>
+                            <span>Project Tracking</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-tasks"></i>
+                            <span>Task Workflow</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Analytics Dashboard</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="login-right">
+                <div class="login-form-container">
+                    <h2>Welcome Back</h2>
+                    <p class="login-subtitle">Sign in to continue to your dashboard</p>
+                    
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="email" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="password" placeholder="Enter your password" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword()">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="login-error" class="error-message" style="display: none;"></div>
+                        
+                        <button type="submit" class="btn-primary btn-block">
+                            <span>Sign In</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+                    
+                    <div class="demo-credentials">
+                        <h4>Demo Credentials</h4>
+                        <div class="credential-cards">
+                            <div class="credential-card" onclick="fillCredentials('admin@company.com', 'admin123')">
+                                <span class="role-badge admin">Admin</span>
+                                <span class="email">admin@company.com</span>
+                            </div>
+                            <div class="credential-card" onclick="fillCredentials('manager@company.com', 'manager123')">
+                                <span class="role-badge manager">Manager</span>
+                                <span class="email">manager@company.com</span>
+                            </div>
+                            <div class="credential-card" onclick="fillCredentials('employee@company.com', 'employee123')">
+                                <span class="role-badge employee">Employee</span>
+                                <span class="email">employee@company.com</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app-page" class="page">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-building"></i>
+                    <span>EMS</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-section="employees" id="nav-employees">
+                    <i class="fas fa-users"></i>
+                    <span>Employees</span>
+                </a>
+                <a href="#" class="nav-item" data-section="departments" id="nav-departments">
+                    <i class="fas fa-sitemap"></i>
+                    <span>Departments</span>
+                </a>
+                <a href="#" class="nav-item" data-section="projects" id="nav-projects">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Projects</span>
+                </a>
+                <a href="#" class="nav-item" data-section="tasks">
+                    <i class="fas fa-tasks"></i>
+                    <span>Tasks</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" class="nav-item" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="page-title">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search..." id="global-search">
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name" id="user-name">Loading...</span>
+                            <span class="user-role" id="user-role">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Section -->
+                <section id="dashboard-section" class="content-section active">
+                    <div class="stats-grid">
+                        <div class="stat-card employees">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="stat-employees">0</h3>
+                                <p>Total Employees</p>
+                            </div>
+                        </div>
+                        <div class="stat-card departments">
+                            <div class="stat-icon">
+                                <i class="fas fa-sitemap"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="stat-departments">0</h3>
+                                <p>Departments</p>
+                            </div>
+                        </div>
+                        <div class="stat-card projects">
+                            <div class="stat-icon">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="stat-projects">0</h3>
+                                <p>Active Projects</p>
+                            </div>
+                        </div>
+                        <div class="stat-card tasks">
+                            <div class="stat-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="stat-tasks">0</h3>
+                                <p>Total Tasks</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card task-overview">
+                            <div class="card-header">
+                                <h3>Task Overview</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="task-stats">
+                                    <div class="task-stat">
+                                        <span class="count" id="tasks-assigned">0</span>
+                                        <span class="label">Assigned</span>
+                                        <div class="progress-bar">
+                                            <div class="progress assigned" id="progress-assigned" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="task-stat">
+                                        <span class="count" id="tasks-progress">0</span>
+                                        <span class="label">In Progress</span>
+                                        <div class="progress-bar">
+                                            <div class="progress in-progress" id="progress-in-progress" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="task-stat">
+                                        <span class="count" id="tasks-completed">0</span>
+                                        <span class="label">Completed</span>
+                                        <div class="progress-bar">
+                                            <div class="progress completed" id="progress-completed" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="task-stat">
+                                        <span class="count overdue" id="tasks-overdue">0</span>
+                                        <span class="label">Overdue</span>
+                                        <div class="progress-bar">
+                                            <div class="progress overdue" id="progress-overdue" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card recent-tasks">
+                            <div class="card-header">
+                                <h3>My Recent Tasks</h3>
+                                <a href="#" onclick="showSection('tasks')">View All</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="task-list" id="recent-tasks-list">
+                                    <!-- Tasks will be loaded dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Employees Section -->
+                <section id="employees-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Employees</h2>
+                        <button class="btn-primary" onclick="showModal('employee-modal')" id="btn-add-employee">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Employee</span>
+                        </button>
+                    </div>
+                    
+                    <div class="filters-bar">
+                        <div class="search-filter">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search employees..." id="employee-search" oninput="searchEmployees()">
+                        </div>
+                        <select id="employee-department-filter" onchange="filterEmployees()">
+                            <option value="">All Departments</option>
+                        </select>
+                        <select id="employee-status-filter" onchange="filterEmployees()">
+                            <option value="">All Status</option>
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                    </div>
+                    
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Email</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employees-table-body">
+                                <!-- Employees will be loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination" id="employees-pagination">
+                        <!-- Pagination will be loaded dynamically -->
+                    </div>
+                </section>
+
+                <!-- Departments Section -->
+                <section id="departments-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Departments</h2>
+                        <button class="btn-primary" onclick="showModal('department-modal')" id="btn-add-department">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Department</span>
+                        </button>
+                    </div>
+                    
+                    <div class="departments-grid" id="departments-grid">
+                        <!-- Departments will be loaded dynamically -->
+                    </div>
+                </section>
+
+                <!-- Projects Section -->
+                <section id="projects-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Projects</h2>
+                        <button class="btn-primary" onclick="showModal('project-modal')" id="btn-add-project">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Project</span>
+                        </button>
+                    </div>
+                    
+                    <div class="filters-bar">
+                        <div class="search-filter">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search projects..." id="project-search" oninput="searchProjects()">
+                        </div>
+                        <select id="project-status-filter" onchange="filterProjects()">
+                            <option value="">All Status</option>
+                            <option value="planning">Planning</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="on_hold">On Hold</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="projects-grid" id="projects-grid">
+                        <!-- Projects will be loaded dynamically -->
+                    </div>
+                </section>
+
+                <!-- Tasks Section -->
+                <section id="tasks-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Tasks</h2>
+                        <button class="btn-primary" onclick="showModal('task-modal')" id="btn-add-task">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Task</span>
+                        </button>
+                    </div>
+                    
+                    <div class="filters-bar">
+                        <div class="search-filter">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search tasks..." id="task-search" oninput="searchTasks()">
+                        </div>
+                        <select id="task-project-filter" onchange="filterTasks()">
+                            <option value="">All Projects</option>
+                        </select>
+                        <select id="task-status-filter" onchange="filterTasks()">
+                            <option value="">All Status</option>
+                            <option value="assigned">Assigned</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="on_hold">On Hold</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                        <select id="task-priority-filter" onchange="filterTasks()">
+                            <option value="">All Priority</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                    
+                    <div class="tasks-board" id="tasks-board">
+                        <div class="task-column" data-status="assigned">
+                            <div class="column-header">
+                                <span class="status-dot assigned"></span>
+                                <h4>Assigned</h4>
+                                <span class="task-count" id="count-assigned">0</span>
+                            </div>
+                            <div class="column-tasks" id="tasks-assigned-column">
+                                <!-- Tasks will be loaded dynamically -->
+                            </div>
+                        </div>
+                        <div class="task-column" data-status="in_progress">
+                            <div class="column-header">
+                                <span class="status-dot in-progress"></span>
+                                <h4>In Progress</h4>
+                                <span class="task-count" id="count-in-progress">0</span>
+                            </div>
+                            <div class="column-tasks" id="tasks-in-progress-column">
+                                <!-- Tasks will be loaded dynamically -->
+                            </div>
+                        </div>
+                        <div class="task-column" data-status="completed">
+                            <div class="column-header">
+                                <span class="status-dot completed"></span>
+                                <h4>Completed</h4>
+                                <span class="task-count" id="count-completed">0</span>
+                            </div>
+                            <div class="column-tasks" id="tasks-completed-column">
+                                <!-- Tasks will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Employee Modal -->
+    <div id="employee-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="employee-modal-title">Add New Employee</h3>
+                <button class="close-btn" onclick="closeModal('employee-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="employee-form">
+                <input type="hidden" id="employee-id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emp-first-name">First Name *</label>
+                        <input type="text" id="emp-first-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emp-last-name">Last Name *</label>
+                        <input type="text" id="emp-last-name" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emp-email">Email *</label>
+                        <input type="email" id="emp-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emp-phone">Phone</label>
+                        <input type="text" id="emp-phone">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emp-department">Department</label>
+                        <select id="emp-department">
+                            <option value="">Select Department</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="emp-designation">Designation</label>
+                        <input type="text" id="emp-designation">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emp-hire-date">Hire Date *</label>
+                        <input type="date" id="emp-hire-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emp-salary">Salary</label>
+                        <input type="number" id="emp-salary" min="0" step="0.01">
+                    </div>
+                </div>
+                <div class="form-group" id="create-account-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="emp-create-account">
+                        <span>Create user account for login</span>
+                    </label>
+                </div>
+                <div class="form-group" id="emp-password-group" style="display: none;">
+                    <label for="emp-password">Password *</label>
+                    <input type="password" id="emp-password" minlength="6">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('employee-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Department Modal -->
+    <div id="department-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="department-modal-title">Add New Department</h3>
+                <button class="close-btn" onclick="closeModal('department-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="department-form">
+                <input type="hidden" id="department-id">
+                <div class="form-group">
+                    <label for="dept-name">Department Name *</label>
+                    <input type="text" id="dept-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="dept-code">Department Code *</label>
+                    <input type="text" id="dept-code" required maxlength="10">
+                </div>
+                <div class="form-group">
+                    <label for="dept-description">Description</label>
+                    <textarea id="dept-description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="dept-manager">Manager</label>
+                    <select id="dept-manager">
+                        <option value="">Select Manager</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('department-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Department</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="project-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="project-modal-title">Add New Project</h3>
+                <button class="close-btn" onclick="closeModal('project-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="project-form">
+                <input type="hidden" id="project-id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="proj-name">Project Name *</label>
+                        <input type="text" id="proj-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="proj-code">Project Code *</label>
+                        <input type="text" id="proj-code" required maxlength="10">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="proj-description">Description</label>
+                    <textarea id="proj-description" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="proj-department">Department</label>
+                        <select id="proj-department">
+                            <option value="">Select Department</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="proj-manager">Project Manager</label>
+                        <select id="proj-manager">
+                            <option value="">Select Manager</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="proj-status">Status</label>
+                        <select id="proj-status">
+                            <option value="planning">Planning</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="on_hold">On Hold</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="proj-priority">Priority</label>
+                        <select id="proj-priority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="proj-start-date">Start Date</label>
+                        <input type="date" id="proj-start-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="proj-end-date">End Date</label>
+                        <input type="date" id="proj-end-date">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('project-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="task-modal-title">Add New Task</h3>
+                <button class="close-btn" onclick="closeModal('task-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="task-form">
+                <input type="hidden" id="task-id">
+                <div class="form-group">
+                    <label for="task-title">Task Title *</label>
+                    <input type="text" id="task-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="task-description">Description</label>
+                    <textarea id="task-description" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-project">Project</label>
+                        <select id="task-project">
+                            <option value="">Select Project</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-assignee">Assignee</label>
+                        <select id="task-assignee">
+                            <option value="">Select Assignee</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-priority">Priority</label>
+                        <select id="task-priority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-due-date">Due Date</label>
+                        <input type="date" id="task-due-date">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="task-estimated-hours">Estimated Hours</label>
+                    <input type="number" id="task-estimated-hours" min="0">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('task-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Task Detail Modal -->
+    <div id="task-detail-modal" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="task-detail-title">Task Details</h3>
+                <button class="close-btn" onclick="closeModal('task-detail-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="task-detail-body">
+                <!-- Task details will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-message">Success!</span>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
