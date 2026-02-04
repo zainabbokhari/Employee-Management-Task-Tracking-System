@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accept Invite</title>
+  </head>
+  <body>
+    <h2>Accept Invite</h2>
+    <p id="message">Please set your password to accept the invite.</p>
+    <div>
+      <label>Email: <span id="invite-email"></span></label>
+    </div>
+    <div>
+      <label>Full name: <input id="invite-fullname" /></label>
+    </div>
+    <div>
+      <label>Password: <input id="invite-password" type="password" /></label>
+    </div>
+    <div>
+      <button id="accept-btn">Accept Invite</button>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      if (!token) {
+        document.getElementById('message').textContent = 'Invalid invite link.';
+      }
+
+      // Show token email if present (decoded via API would be better)
+      document.getElementById('accept-btn').addEventListener('click', async () => {
+        const email = document.getElementById('invite-email').textContent || '';
+        const full_name = document.getElementById('invite-fullname').value;
+        const password = document.getElementById('invite-password').value;
+        if (!password || !full_name) { alert('Fill name and password'); return; }
+
+        try {
+          const res = await fetch('/api/invite/accept', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, email, password, full_name })
+          });
+          const json = await res.json();
+          if (!res.ok) throw new Error(json.detail || 'Invite accept failed');
+          alert('Account created. You can now login.');
+          window.location.href = '/';
+        } catch (err) {
+          alert(err.message || 'Error');
+        }
+      });
+    </script>
+  </body>
+  </html>

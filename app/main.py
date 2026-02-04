@@ -12,7 +12,7 @@ import time
 from app.config import settings
 from app.database import Base, get_engine, get_session_local
 from app.utils.logger import logger, log_request, log_error
-from app.routers import auth, departments, employees, projects, tasks
+from app.routers import auth, departments, employees, projects, tasks, users, invite
 
 # Import models to register them with SQLAlchemy
 from app.models import User, Department, Employee, Project, Task
@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
         Base.metadata.create_all(bind=current_engine)
         logger.info("Database tables created successfully")
         
-        # Create default admin user if not exists
+    # Create default admin user if not exists (controlled by settings.CREATE_DEMO_USERS)
         from app.services.auth import AuthService
         from app.schemas.user import UserCreate
         from app.models.user import UserRole
@@ -41,37 +41,40 @@ async def lifespan(app: FastAPI):
         SessionLocal = get_session_local()
         db = SessionLocal()
         try:
-            # Check if admin exists
-            existing_admin = db.query(User).filter(User.email == "admin@company.com").first()
-            if not existing_admin:
-                admin_user = UserCreate(
-                    email="admin@company.com",
-                    password="admin123",
-                    full_name="System Administrator",
-                    role=UserRole.ADMIN
-                )
-                AuthService.create_user(db, admin_user)
-                logger.info("Default admin user created: admin@company.com")
-                
-                # Create manager user
-                manager_user = UserCreate(
-                    email="manager@company.com",
-                    password="manager123",
-                    full_name="Project Manager",
-                    role=UserRole.MANAGER
-                )
-                AuthService.create_user(db, manager_user)
-                logger.info("Default manager user created: manager@company.com")
-                
-                # Create employee user
-                employee_user = UserCreate(
-                    email="employee@company.com",
-                    password="employee123",
-                    full_name="John Employee",
-                    role=UserRole.EMPLOYEE
-                )
-                AuthService.create_user(db, employee_user)
-                logger.info("Default employee user created: employee@company.com")
+            if settings.CREATE_DEMO_USERS:
+                # Check if admin exists
+                existing_admin = db.query(User).filter(User.email == "admin@company.com").first()
+                if not existing_admin:
+                    admin_user = UserCreate(
+                        email="admin@company.com",
+                        password="admin123",
+                        full_name="System Administrator",
+                        role=UserRole.ADMIN
+                    )
+                    AuthService.create_user(db, admin_user)
+                    logger.info("Default admin user created: admin@company.com")
+
+                    # Create manager user
+                    manager_user = UserCreate(
+                        email="manager@company.com",
+                        password="manager123",
+                        full_name="Project Manager",
+                        role=UserRole.MANAGER
+                    )
+                    AuthService.create_user(db, manager_user)
+                    logger.info("Default manager user created: manager@company.com")
+
+                    # Create employee user
+                    employee_user = UserCreate(
+                        email="employee@company.com",
+                        password="employee123",
+                        full_name="John Employee",
+                        role=UserRole.EMPLOYEE
+                    )
+                    AuthService.create_user(db, employee_user)
+                    logger.info("Default employee user created: employee@company.com")
+            else:
+                logger.info("Demo user creation disabled by settings (CREATE_DEMO_USERS=False)")
         finally:
             db.close()
             
@@ -170,6 +173,8 @@ app.include_router(departments.router)
 app.include_router(employees.router)
 app.include_router(projects.router)
 app.include_router(tasks.router)
+app.include_router(users.router)
+app.include_router(invite.router)
 
 
 # Mount static files

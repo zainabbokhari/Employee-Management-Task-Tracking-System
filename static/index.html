@@ -72,22 +72,9 @@
                         </button>
                     </form>
                     
-                    <div class="demo-credentials">
-                        <h4>Demo Credentials</h4>
-                        <div class="credential-cards">
-                            <div class="credential-card" onclick="fillCredentials('admin@company.com', 'admin123')">
-                                <span class="role-badge admin">Admin</span>
-                                <span class="email">admin@company.com</span>
-                            </div>
-                            <div class="credential-card" onclick="fillCredentials('manager@company.com', 'manager123')">
-                                <span class="role-badge manager">Manager</span>
-                                <span class="email">manager@company.com</span>
-                            </div>
-                            <div class="credential-card" onclick="fillCredentials('employee@company.com', 'employee123')">
-                                <span class="role-badge employee">Employee</span>
-                                <span class="email">employee@company.com</span>
-                            </div>
-                        </div>
+                    <div class="request-access">
+                        <p>If you need access, please contact your system administrator to create an account for you.</p>
+                        <p>If you are the administrator, use the server-side `scripts/create_admin.py` tool to add users.</p>
                     </div>
                 </div>
             </div>
@@ -267,6 +254,10 @@
                             <i class="fas fa-plus"></i>
                             <span>Add Employee</span>
                         </button>
+                        <button class="btn-secondary" onclick="showModal('invite-modal')" id="btn-invite-user">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Invite User</span>
+                        </button>
                     </div>
                     
                     <div class="filters-bar">
@@ -306,6 +297,44 @@
                         <!-- Pagination will be loaded dynamically -->
                     </div>
                 </section>
+
+                        <!-- Invite User Modal -->
+                        <div id="invite-modal" class="modal">
+                            <div class="modal-content">
+                                <h3>Invite User</h3>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="invite-email" placeholder="user@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Full name</label>
+                                    <input type="text" id="invite-fullname" placeholder="Full Name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Role</label>
+                                    <select id="invite-role">
+                                        <option value="EMPLOYEE">Employee</option>
+                                        <option value="MANAGER">Manager</option>
+                                        <option value="ADMIN">Admin</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Temporary password (or leave blank to generate invite token)</label>
+                                    <input type="password" id="invite-password" placeholder="Temporary password">
+                                </div>
+                                <div class="form-group">
+                                    <label><input type="checkbox" id="invite-generate-token"> Generate invite token instead of setting password</label>
+                                </div>
+                                <div class="form-group" id="invite-token-area" style="display:none;">
+                                    <label>Invite token (copy and send to user)</label>
+                                    <textarea id="invite-token" readonly rows="3" style="width:100%"></textarea>
+                                </div>
+                                <div class="modal-actions">
+                                    <button class="btn-primary" onclick="submitInvite()">Invite</button>
+                                    <button class="btn-secondary" onclick="closeModal('invite-modal')">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
 
                 <!-- Departments Section -->
                 <section id="departments-section" class="content-section">

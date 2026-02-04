@@ -117,13 +117,7 @@ function isOverdue(dateStr) {
 // Authentication Functions
 // ========================================
 
-/**
- * Fill demo credentials
- */
-function fillCredentials(email, password) {
-    document.getElementById('email').value = email;
-    document.getElementById('password').value = password;
-}
+// Demo credential autofill removed for production
 
 /**
  * Toggle password visibility
@@ -253,6 +247,55 @@ function setupRoleBasedAccess() {
         document.getElementById('nav-departments').style.display = 'none';
     }
 }
+
+/**
+ * Submit invite (admin only)
+ */
+async function submitInvite() {
+    const email = document.getElementById('invite-email').value.trim();
+    const full_name = document.getElementById('invite-fullname').value.trim();
+    const role = document.getElementById('invite-role').value;
+    const password = document.getElementById('invite-password').value;
+    const generateToken = document.getElementById('invite-generate-token').checked;
+
+    if (!email || !full_name || !password) {
+        showToast('Please fill all fields', 'error');
+        return;
+    }
+
+    try {
+        setLoading(true);
+        if (generateToken) {
+            // call invite endpoint to generate token and optionally send email
+            const res = await apiRequest('/invite/', { method: 'POST', body: JSON.stringify({ email, role }) });
+            document.getElementById('invite-token').value = res.invite_link || res.invite_token;
+            document.getElementById('invite-token-area').style.display = 'block';
+            showToast('Invite token generated. Copy and send to user (or email sent if configured).', 'success');
+        } else {
+            const body = JSON.stringify({ email, full_name, password, role });
+            const res = await apiRequest('/users/', { method: 'POST', body });
+            showToast('User invited: ' + res.email, 'success');
+            closeModal('invite-modal');
+            // reload employees list
+            loadEmployees();
+        }
+    } catch (err) {
+        showToast(err.message || 'Invite failed', 'error');
+    } finally {
+        setLoading(false);
+    }
+}
+
+// Toggle token area visibility when checkbox changes
+document.addEventListener('DOMContentLoaded', () => {
+    const checkbox = document.getElementById('invite-generate-token');
+    if (checkbox) {
+        checkbox.addEventListener('change', (e) => {
+            const tokenArea = document.getElementById('invite-token-area');
+            if (e.target.checked) tokenArea.style.display = 'block'; else tokenArea.style.display = 'none';
+        });
+    }
+});
 
 // ========================================
 // Navigation Functions

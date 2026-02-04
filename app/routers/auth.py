@@ -16,6 +16,7 @@ from app.schemas.user import (
 from app.services.auth import AuthService
 from app.utils.security import get_current_user
 from app.models.user import User
+from app.config import settings
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 
@@ -33,6 +34,10 @@ async def register(
     - **full_name**: User's full name
     - **role**: Optional role (default: employee)
     """
+    # Gate public registration behind configuration
+    if not settings.ALLOW_PUBLIC_REGISTRATION:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Public registration is disabled")
+
     return AuthService.create_user(db, user_data)
 
 
