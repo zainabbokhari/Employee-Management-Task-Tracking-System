@@ -2,7 +2,7 @@
 
 A comprehensive full-stack application for managing employees, departments, projects, and tasks within an organization.
 
-## 🚀 Features
+## Features
 
 ### Backend (FastAPI)
 - **JWT Authentication** - Secure login with token-based authentication
@@ -29,7 +29,7 @@ A comprehensive full-stack application for managing employees, departments, proj
 - **XSS Protection** - Input sanitization
 - **CORS Configuration** - Controlled cross-origin access
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 employee_management_system/
@@ -81,7 +81,7 @@ employee_management_system/
 └── README.md
 ```
 
-## 🛠️ Installation & Setup
+##  Installation & Setup
 
 ### Prerequisites
 - Python 3.10+
@@ -124,7 +124,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - **API Docs**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
-## 👤 Default Users
+##  Default Users
 
 | Role     | Email              | Password  |
 |----------|-------------------|-----------|
@@ -132,7 +132,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 | Manager  | manager@company.com | manager123 |
 | Employee | employee@company.com | employee123 |
 
-## 📚 API Endpoints
+##  API Endpoints
 
 ### Authentication
 - `POST /api/auth/login` - User login
@@ -168,18 +168,18 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - `PATCH /api/tasks/{id}/status` - Update task status (workflow)
 - `DELETE /api/tasks/{id}` - Soft delete task
 
-## 🔐 Role Permissions
+##  Role Permissions
 
 | Action | Admin | Manager | Employee |
 |--------|-------|---------|----------|
-| View All Employees | ✅ | ✅ | ❌ |
-| Manage Employees | ✅ | ❌ | ❌ |
-| Manage Departments | ✅ | ❌ | ❌ |
-| Create Projects | ✅ | ✅ | ❌ |
-| Assign Tasks | ✅ | ✅ | ❌ |
-| Update Own Tasks | ✅ | ✅ | ✅ |
-| View Dashboard Stats | ✅ | ✅ | ❌ |
+| View All Employees | Y | Y | N |
+| Manage Employees | Y | N | N |
+| Manage Departments | Y | N | N |
+| Create Projects | Y | Y | N |
+| Assign Tasks | Y | Y | N |
+| Update Own Tasks | Y | Y | Y |
+| View Dashboard Stats | Y | Y | N |
 
-## 📝 License
+##  License
 
 MIT License - Feel free to use for educational purposes.
